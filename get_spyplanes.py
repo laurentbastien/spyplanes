@@ -3,18 +3,18 @@ import pandas as pd
 from shapely.geometry import shape, Point
 import os
 
-with open('london.geojson') as f:
-    baltijs = json.load(f)
+with open('yourgeojson.geojson') as f:
+    cityjs = json.load(f)
 
-balti = shape(baltijs['features'][0]['geometry'])
-notoverbalti = 0
+city = shape(cityjs['features'][0]['geometry'])
+notovercity = 0
 
 # __________________________________
 
 master_appearances = []
-balti_ids = set()
+city_ids = set()
 
-for root, dirs, files in os.walk("data/2017-06-04"):
+for root, dirs, files in os.walk("your/folder/path"):
 
     for file in files:
 
@@ -58,13 +58,13 @@ for root, dirs, files in os.walk("data/2017-06-04"):
                             planepoint = Point(plane_appearance['_long'],plane_appearance['_lat'])
 
                             # Check is that point is in DC
-                            if balti.contains(planepoint):
+                            if city.contains(planepoint):
 
                                 # Append appearance to DC appearances list (just append the plane, not appearance)
-                                balti_ids.add(plane_appearance["Id"])
+                                city_ids.add(plane_appearance["Id"])
 
                             else:
-                                notoverbalti += 1
+                                notovercity += 1
 
                             # Also append the appearance to our master appearances list
                             master_appearances.append(plane_appearance)
@@ -79,19 +79,19 @@ for root, dirs, files in os.walk("data/2017-06-04"):
 
 
                         # Check is that point is in DC
-                        if balti.contains(planepoint):
+                        if city.contains(planepoint):
 
                             # Append appearance to DC appearances list
-                            balti_ids.add(plane_appearance["Id"])
+                            city_ids.add(plane_appearance["Id"])
 
                         else:
-                            notoverbalti += 1
+                            notovercity += 1
 
                         # Also append the appearance to our master appearances list
                         master_appearances.append(plane_appearance)
 
 #Json.dumps converts it to a string instead
-balti_appearances = [point for point in master_appearances if point["Id"] in balti_ids]
+city_appearances = [point for point in master_appearances if point["Id"] in city_ids]
 
-pdoverbalti = pd.DataFrame(balti_appearances)
-pdoverbalti.to_csv("londonday.csv", sep=',', encoding='utf-8')
+pdovercity = pd.DataFrame(city_appearances)
+pdovercity.to_csv("londonday.csv", sep=',', encoding='utf-8')
